@@ -56,7 +56,7 @@ struct tlv *parseToken(STL_String *tok, int tokNum) {
     /* Temporary "containers" for our data types */
     auto char *quote;
     auto double num;
-    auto bool tbool;
+    auto bool tbool = false;
 
     /* Main part */
     playWithBackslashes(tok);
@@ -83,7 +83,9 @@ struct tlv *parseToken(STL_String *tok, int tokNum) {
     }
 
     /* Allocating memory for flexible-sized structure */
-    ret = calloc(1, sizeof(struct tlv) + pred.length);
+    if ((ret = calloc(1, sizeof(struct tlv) + pred.length)) == NULL) {
+        handle_error("calloc");
+    }
     ret->type = pred.type;
     ret->length = pred.length;
     ret->key = tokNum;
@@ -118,7 +120,9 @@ char *getKeyValue(STL_String *tok) {
     while (*colon-- != '"')
         ;
     nchar = colon - quote;
-    ret = calloc(nchar, sizeof(char));
+    if ((ret = calloc(nchar, sizeof(char))) == NULL) {
+        handle_error("calloc");
+    }
     memcpy(ret, quote + 1, nchar);
 
     /* Returning value */
@@ -139,7 +143,9 @@ void writeMapToFile(hashMap *map, size_t size, FILE *fp) {
             entryValueSize = strlen(map[i]->key);
 
             /* Allocating memory */
-            entry = calloc(1, sizeof(struct tlv) + entryValueSize);
+            if ((entry = calloc(1, sizeof(struct tlv) + entryValueSize)) == NULL) {
+                handle_error("calloc");
+            }
 
             /* Setting up our TLV structure */
             entry->length = entryValueSize;
@@ -148,7 +154,9 @@ void writeMapToFile(hashMap *map, size_t size, FILE *fp) {
             memcpy(entry->value, map[i]->key, entryValueSize);
 
             /* Writing results */
-            fwrite(entry, sizeof(struct tlv) + entry->length, 1lu, fp);
+            if (fwrite(entry, sizeof(struct tlv) + entry->length, 1, fp) != 1) {
+                handle_error("fwrite");
+            }
             free(entry);
         }
     }

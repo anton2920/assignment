@@ -60,7 +60,9 @@ int main(int argc, const char *argv[]) {
 
         /* Parse our token into TLV format */
         struct tlv *parsedToken = parseToken(&tok, tokNum); /* Function uses calloc(3) */
-        fwrite(parsedToken, sizeof(struct tlv) + parsedToken->length, 0x1, fout);
+        if (fwrite(parsedToken, sizeof(struct tlv) + parsedToken->length, 1, fout) != 1) {
+            handle_error("fwrite");
+        }
         free(parsedToken); /* Cleaning up */
 
         /* Adding string-integer pair to our dictionary */

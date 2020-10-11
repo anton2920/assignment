@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "hash_map.h"
+#include "libs.h"
 
 static size_t hashCode(const char *str, size_t size) {
 
@@ -37,6 +37,11 @@ void insert(hashMap *hashArray, size_t size, char *key, int data) {
     /* Initializing variables */
     auto struct DataItem *item = (struct DataItem *) malloc(sizeof(struct DataItem));
     auto size_t hashIndex;
+
+    /* VarCheck */
+    if (item == NULL) {
+        handle_error("malloc");
+    }
 
     /* Main part */
 
