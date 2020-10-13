@@ -1,7 +1,7 @@
 # Initializing variables
 CC = gcc
 CFLAGS = -Wall -Wextra -fPIC -O2 -std=c99
-LDFLAGS = -lSTL_String
+LDFLAGS = -lSTL_String -lSTL_Vector
 
 # Main part
 all: main libs hashmap
